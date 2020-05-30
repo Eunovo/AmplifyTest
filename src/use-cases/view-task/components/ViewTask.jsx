@@ -17,13 +17,13 @@ function StatusView ({ status, ...rest }) {
 export function ViewTask ({ className, task }) {
   return (
     <div className={`card ${className}`}>
-      <div class='card-body'>
-        <h5 class='card-title'>{task.title}</h5>
-        <h6 class='card-subtitle mb-3'>
+      <div className='card-body'>
+        <h5 className='card-title'>{task.title}</h5>
+        <h6 className='card-subtitle mb-3'>
           <StatusView status={task.status} />
         </h6>
 
-        <p class='card-text'>{task.description}</p>
+        <p className='card-text'>{task.description}</p>
       </div>
     </div>
   )
