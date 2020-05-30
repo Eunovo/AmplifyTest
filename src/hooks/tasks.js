@@ -1,5 +1,5 @@
-import { useReducer } from "react";
-import { DataStore } from "@aws-amplify/datastore";
+import { useEffect, useReducer, useState } from "react";
+import { DataStore, Predicates } from "@aws-amplify/datastore";
 import { Task } from "../models";
 
 const Actions = {
@@ -42,6 +42,32 @@ export function useSaveTask() {
 
     return {
         save: saveTask,
+        ...state,
+    }
+}
+
+export function useFindTasks() {
+    const [state, dispatch] = useReducer(reducer, initialState);
+    const [params, setParams] = useState({ predicate: Predicates.ALL, paginate: null });
+
+    function query(predicate = Predicates.ALL) {
+        setParams((p) => ({ ...p, predicate }));
+    }
+
+    useEffect(() => {
+        (async function () {
+            dispatch({ type: Actions.REQ_START });
+            try {
+                const result = await DataStore.query(Task, params.predicate);
+                dispatch({ type: Actions.REQ_SUCCESS, payload: result });
+            } catch (error) {
+                dispatch({ type: Actions.REQ_FAILED, payload: error });
+            }
+        })()
+    }, [params]);
+
+    return {
+        query,
         ...state,
     }
 }
