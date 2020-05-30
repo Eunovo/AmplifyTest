@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useState } from "react";
+import { useCallback, useEffect, useReducer, useState } from "react";
 import { DataStore, Predicates } from "@aws-amplify/datastore";
 import { Task } from "../models";
 
@@ -54,7 +54,7 @@ export function useFindTasks() {
         setParams((p) => ({ ...p, predicate }));
     }
 
-    async function fetchData() {
+    const fetchData = useCallback(async () => {
         dispatch({ type: Actions.REQ_START });
         try {
             const result = await DataStore.query(Task, params.predicate);
@@ -62,7 +62,7 @@ export function useFindTasks() {
         } catch (error) {
             dispatch({ type: Actions.REQ_FAILED, payload: error });
         }
-    }
+    }, [params]);
 
     useEffect(() => {
         const subscription = DataStore.observe(Task).subscribe(msg => {
@@ -75,7 +75,7 @@ export function useFindTasks() {
 
     useEffect(() => {
         fetchData();
-    }, [fetchData, params]);
+    }, [fetchData]);
 
     return {
         query,
