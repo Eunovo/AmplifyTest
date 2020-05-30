@@ -54,17 +54,28 @@ export function useFindTasks() {
         setParams((p) => ({ ...p, predicate }));
     }
 
+    async function fetchData() {
+        dispatch({ type: Actions.REQ_START });
+        try {
+            const result = await DataStore.query(Task, params.predicate);
+            dispatch({ type: Actions.REQ_SUCCESS, payload: result });
+        } catch (error) {
+            dispatch({ type: Actions.REQ_FAILED, payload: error });
+        }
+    }
+
     useEffect(() => {
-        (async function () {
-            dispatch({ type: Actions.REQ_START });
-            try {
-                const result = await DataStore.query(Task, params.predicate);
-                dispatch({ type: Actions.REQ_SUCCESS, payload: result });
-            } catch (error) {
-                dispatch({ type: Actions.REQ_FAILED, payload: error });
-            }
-        })()
-    }, [params]);
+        const subscription = DataStore.observe(Task).subscribe(msg => {
+            console.log(msg.opType, msg.element);
+            fetchData();
+        });
+
+        return () => subscription.unsubscribe();
+    }, [fetchData]);
+
+    useEffect(() => {
+        fetchData();
+    }, [fetchData, params]);
 
     return {
         query,
