@@ -21,7 +21,7 @@ export function ViewTaskList ({ ...rest }) {
 
       {tasks.isLoading ? (
         <div className='d-flex justify-content-center'>
-          <div class='spinner-border text-primary' role='status'>
+          <div className='spinner-border text-primary' role='status'>
             <span class='sr-only'>Loading...</span>
           </div>
         </div>
