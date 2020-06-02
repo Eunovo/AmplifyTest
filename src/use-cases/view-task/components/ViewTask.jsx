@@ -1,20 +1,32 @@
-import React from 'react';
+import React from 'react'
+
+import { useDeleteTask } from '../../../hooks/tasks'
 
 function StatusView ({ status, ...rest }) {
   if (status === 'todo')
     return (
-      <div {...rest} className="rounded" style={{ ...StatusStyles, backgroundColor: 'blue' }}>
+      <div
+        {...rest}
+        className='rounded'
+        style={{ ...StatusStyles, backgroundColor: 'blue' }}
+      >
         Todo
       </div>
     )
   return (
-    <div {...rest} className="rounded" style={{ ...StatusStyles, backgroundColor: 'green' }}>
+    <div
+      {...rest}
+      className='rounded'
+      style={{ ...StatusStyles, backgroundColor: 'green' }}
+    >
       Completed
     </div>
   )
 }
 
 export function ViewTask ({ className, task }) {
+  const deleteTask = useDeleteTask()
+
   return (
     <div className={`card ${className}`}>
       <div className='card-body'>
@@ -24,6 +36,13 @@ export function ViewTask ({ className, task }) {
         </h6>
 
         <p className='card-text'>{task.description}</p>
+        <button
+          className='btn btn-danger'
+          onClick={() => deleteTask.delete(task)}
+          disabled={deleteTask.isLoading}
+        >
+          Delete
+        </button>
       </div>
     </div>
   )

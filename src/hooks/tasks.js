@@ -82,3 +82,22 @@ export function useFindTasks() {
         ...state,
     }
 }
+
+export function useDeleteTask() {
+    const [state, dispatch] = useReducer(reducer, initialState);
+
+    async function deleteTask(task) {
+        dispatch({ type: Actions.REQ_START });
+        try {
+            const result = await DataStore.delete(task);
+            dispatch({ type: Actions.REQ_SUCCESS, payload: result });
+        } catch (error) {
+            dispatch({ type: Actions.REQ_FAILED, payload: error });
+        }
+    }
+
+    return {
+        delete: deleteTask,
+        ...state,
+    }
+}
